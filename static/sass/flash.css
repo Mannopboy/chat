@@ -1,0 +1,48 @@
+.flash {
+  position: absolute;
+  z-index: 20;
+  top: 0;
+  left: -100%;
+  width: 300px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  transition: 2s;
+}
+.flash_icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  right: -5%;
+  transform: translateY(-50%);
+  top: 50%;
+}
+.flash_icon i {
+  color: #ffffff;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.error {
+  left: 0 !important;
+  background-color: #86092c;
+}
+.error .flash_icon {
+  background-color: #86092c;
+}
+
+.success {
+  left: 0;
+  background-color: #38E54D;
+}
+.success .flash_icon {
+  background-color: #38E54D;
+}
+
+/*# sourceMappingURL=flash.css.map */

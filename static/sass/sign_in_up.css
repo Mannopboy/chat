@@ -1,0 +1,129 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap");
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "Roboto Slab", serif;
+}
+
+.sign {
+  height: 100vh;
+  background-color: #1d3557;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.sign_btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  justify-content: flex-end;
+}
+.sign_btn a {
+  text-decoration: none;
+  color: #1d3557;
+}
+.sign_btn_active {
+  background-color: #ffffff !important;
+}
+.sign_btn_active i {
+  color: #1d3557 !important;
+}
+.sign_btn div {
+  cursor: pointer;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #1d3557;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.sign_btn div i {
+  color: #ffffff;
+}
+.sign_form {
+  width: 400px;
+  height: 400px;
+  background-color: #a0c4ff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 5px;
+  border-radius: 5px;
+  position: relative;
+}
+.sign_form a {
+  text-decoration: none;
+  color: #ffffff;
+}
+.sign_form_icon {
+  width: 50%;
+  height: 50%;
+  background-color: #1d3557;
+  position: absolute;
+  border-radius: 50%;
+  left: -20%;
+  top: -20%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  border: 5px solid #a0c4ff;
+  cursor: pointer;
+}
+.sign_form_icon i {
+  color: #ffffff;
+  font-size: 40px;
+  transition: 0.5s;
+  transform: rotate(0deg);
+}
+.sign_form_icon:hover i {
+  transform: rotate(360deg);
+}
+.sign_form form {
+  height: 90%;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 100%;
+  align-items: center;
+  display: none;
+  opacity: 1;
+}
+.sign_form form > h1 {
+  color: #1d3557;
+}
+.sign_form form input {
+  width: 90%;
+  height: 30px;
+  padding: 5px;
+  outline: none;
+  border: none;
+  border-radius: 5px;
+}
+.sign_form form input::placeholder {
+  color: #1d3557;
+}
+.sign_form form button {
+  width: 90%;
+  height: 30px;
+  cursor: pointer;
+  background-color: #1d3557;
+  border: none;
+  color: #ffffff;
+  border-radius: 5px;
+}
+.sign_form form button:active {
+  transform: scale(1.2);
+}
+.sign_form form button:hover {
+  background-color: #14213d;
+}
+.sign_active {
+  opacity: 1 !important;
+  display: flex !important;
+}
+
+/*# sourceMappingURL=sign_in_up.css.map */

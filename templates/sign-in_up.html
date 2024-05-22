@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+          integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='sass/sign_in_up.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='sass/flash.min.css') }}">
+
+</head>
+<body>
+<div class="sign">
+
+    {% include 'flash.html' %}
+    <div class="sign_form">
+        <a href="{{ url_for('chat') }}">
+            <div class="sign_form_icon">
+                <i class="fa-regular fa-paper-plane"></i>
+                <h1>Chat app</h1>
+            </div>
+        </a>
+        <div class="sign_btn">
+            <a href="{{ url_for('sign', type_request='sign_in') }}">
+                <div {% if type_request == "sign_in" %} class="sign_btn_active" {% endif %}><i
+                        class="fa-solid fa-right-to-bracket"></i></div>
+            </a>
+            <a href="{{ url_for('sign', type_request='sign_up') }}">
+                <div {% if type_request == "sign_up" %} class="sign_btn_active" {% endif %}><i
+                        class="fa-solid fa-pen-to-square"></i></div>
+            </a>
+        </div>
+        <form action="{{ url_for('sign', type_request='sign_in') }}" id="sign_in_form"
+                {% if type_request == "sign_in" %} class="sign_active"{% endif %}
+              method="post">
+            <h1>Sign in</h1>
+            <input type="text" required name="username" placeholder="username">
+            <input type="password" required name="password" placeholder="password">
+            <button>Sign in</button>
+        </form>
+        <form action="{{ url_for('sign', type_request='sign_up') }}" id="sign_up_form"
+                {% if type_request == "sign_up" %} class="sign_active"{% endif %} method="post">
+            <h1>Sign up</h1>
+            <input type="text" required name="username" placeholder="username">
+            <input type="password" required name="password" placeholder="password">
+            <button>Sign up</button>
+        </form>
+    </div>
+
+</div>
+<script src="{{ url_for('static', filename='js/flash/js.js') }}"></script>
+
+</body>
+</html>

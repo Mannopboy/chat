@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>backend.models.models &mdash; Chat App 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=8d563738"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Chat App
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Chat App</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">backend.models.models</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for backend.models.models</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">flask_sqlalchemy</span> <span class="kn">import</span> <span class="n">SQLAlchemy</span>
+<span class="kn">from</span> <span class="nn">flask_migrate</span> <span class="kn">import</span> <span class="n">Migrate</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">String</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">Boolean</span><span class="p">,</span> <span class="n">Column</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">,</span> <span class="n">DateTime</span><span class="p">,</span> <span class="n">or_</span><span class="p">,</span> <span class="n">and_</span><span class="p">,</span> <span class="n">desc</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">ARRAY</span><span class="p">,</span> <span class="n">JSON</span><span class="p">,</span> \
+    <span class="n">extract</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">contains_eager</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">relationship</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.sql</span> <span class="kn">import</span> <span class="n">func</span><span class="p">,</span> <span class="n">functions</span>
+<span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="n">db</span> <span class="o">=</span> <span class="n">SQLAlchemy</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="db_setup">
+<a class="viewcode-back" href="../../../backend.models.html#backend.models.models.db_setup">[docs]</a>
+<span class="k">def</span> <span class="nf">db_setup</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    to connect flask app and flask sqlalchemy package and migrate sqlalchemy models</span>
+<span class="sd">    :param app:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">from_object</span><span class="p">(</span><span class="s1">&#39;backend.models.config&#39;</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">app</span> <span class="o">=</span> <span class="n">app</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">init_app</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+    <span class="n">Migrate</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">db</span></div>
+
+
+
+<div class="viewcode-block" id="User">
+<a class="viewcode-back" href="../../../backend.models.html#backend.models.models.User">[docs]</a>
+<span class="k">class</span> <span class="nc">User</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class to create user db table</span>
+
+<span class="sd">    relationship:</span>
+<span class="sd">        UsersMessages table to get all messages</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">String</span><span class="p">)</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">String</span><span class="p">)</span>
+    <span class="n">password</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">String</span><span class="p">)</span>
+    <span class="n">messages</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;UsersMessages&quot;</span><span class="p">,</span> <span class="n">backref</span><span class="o">=</span><span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="n">order_by</span><span class="o">=</span><span class="n">desc</span><span class="p">(</span><span class="s2">&quot;UsersMessages.id&quot;</span><span class="p">))</span>
+    <span class="n">status</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">DateTime</span><span class="p">)</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">String</span><span class="p">)</span>
+
+<div class="viewcode-block" id="User.add">
+<a class="viewcode-back" href="../../../backend.models.html#backend.models.models.User.add">[docs]</a>
+    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        to add new item and commit it</span>
+<span class="sd">        :return: new item</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="User.commit">
+<a class="viewcode-back" href="../../../backend.models.html#backend.models.models.User.commit">[docs]</a>
+    <span class="k">def</span> <span class="nf">commit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        to update item</span>
+<span class="sd">        :return: updated item</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="User.delete">
+<a class="viewcode-back" href="../../../backend.models.html#backend.models.models.User.delete">[docs]</a>
+    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        to delete item</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="UserContacts">
+<a class="viewcode-back" href="../../../backend.models.html#backend.models.models.UserContacts">[docs]</a>
+<span class="k">class</span> <span class="nc">UserContacts</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class to create contact table</span>
+<span class="sd">    foreign key:</span>
+<span class="sd">        first_person: user who saves contact,</span>
+<span class="sd">        second_person: to get another user data</span>
+<span class="sd">    backref:</span>
+<span class="sd">        first: get first user&#39;s date from User model</span>
+<span class="sd">        second: get second user&#39;s date from User model</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;users_contacts&quot;</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">first_person</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s1">&#39;user.id&#39;</span><span class="p">))</span>
+    <span class="n">second_person</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s1">&#39;user.id&#39;</span><span class="p">))</span>
+    <span class="n">first</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;User&quot;</span><span class="p">,</span> <span class="n">foreign_keys</span><span class="o">=</span><span class="p">[</span><span class="n">first_person</span><span class="p">])</span>
+    <span class="n">second</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;User&quot;</span><span class="p">,</span> <span class="n">foreign_keys</span><span class="o">=</span><span class="p">[</span><span class="n">second_person</span><span class="p">])</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">String</span><span class="p">)</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">String</span><span class="p">)</span>
+
+<div class="viewcode-block" id="UserContacts.add">
+<a class="viewcode-back" href="../../../backend.models.html#backend.models.models.UserContacts.add">[docs]</a>
+    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        to add new item and commit it</span>
+<span class="sd">        :return: new item</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="UserContacts.commit">
+<a class="viewcode-back" href="../../../backend.models.html#backend.models.models.UserContacts.commit">[docs]</a>
+    <span class="k">def</span> <span class="nf">commit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        to update item</span>
+<span class="sd">        :return: updated item</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="UserContacts.delete">
+<a class="viewcode-back" href="../../../backend.models.html#backend.models.models.UserContacts.delete">[docs]</a>
+    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        to delete item</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="UsersChat">
+<a class="viewcode-back" href="../../../backend.models.html#backend.models.models.UsersChat">[docs]</a>
+<span class="k">class</span> <span class="nc">UsersChat</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class to create chat table</span>
+<span class="sd">    foreign keys:</span>
+<span class="sd">        first_person: user who first writes message</span>
+<span class="sd">        second_person: user who first receives message</span>
+<span class="sd">    backref:</span>
+<span class="sd">        first: get first user&#39;s date from User model</span>
+<span class="sd">        second: get second user&#39;s date from User model</span>
+<span class="sd">    relationship:</span>
+<span class="sd">        UsersMessages:  model to get all messages by chat id</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;users_chat&quot;</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">first_person</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s1">&#39;user.id&#39;</span><span class="p">))</span>
+    <span class="n">second_person</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s1">&#39;user.id&#39;</span><span class="p">))</span>
+    <span class="n">first</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;User&quot;</span><span class="p">,</span> <span class="n">foreign_keys</span><span class="o">=</span><span class="p">[</span><span class="n">first_person</span><span class="p">])</span>
+    <span class="n">second</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="s2">&quot;User&quot;</span><span class="p">,</span> <span class="n">foreign_keys</span><span class="o">=</span><span class="p">[</span><span class="n">second_person</span><span class="p">])</span>
+    <span class="n">messages</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="s1">&#39;UsersMessages&#39;</span><span class="p">,</span> <span class="n">backref</span><span class="o">=</span><span class="s2">&quot;user_chat&quot;</span><span class="p">,</span> <span class="n">order_by</span><span class="o">=</span><span class="s2">&quot;UsersMessages.id&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="UsersChat.convert_json">
+<a class="viewcode-back" href="../../../backend.models.html#backend.models.models.UsersChat.convert_json">[docs]</a>
+    <span class="k">def</span> <span class="nf">convert_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            api function</span>
+<span class="sd">            :return: model UsersChat datas in object form</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">second_person</span><span class="p">:</span>
+            <span class="n">username</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">second</span><span class="o">.</span><span class="n">username</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">second</span><span class="o">.</span><span class="n">img</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">username</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">first</span><span class="o">.</span><span class="n">username</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">first</span><span class="o">.</span><span class="n">img</span>
+        <span class="n">num_not_seen</span> <span class="o">=</span> <span class="n">UsersMessages</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">UsersMessages</span><span class="o">.</span><span class="n">chat_id</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                                                  <span class="n">UsersMessages</span><span class="o">.</span><span class="n">messages_status</span> <span class="o">==</span> <span class="kc">None</span><span class="p">,</span>
+                                                  <span class="n">UsersMessages</span><span class="o">.</span><span class="n">user_id</span> <span class="o">!=</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+        <span class="n">date</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">last_msg</span> <span class="o">=</span> <span class="s1">&#39;Cleaned Up&#39;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">messages</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">messages</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">messages</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">:</span>
+                <span class="c1"># to get last message by chat id</span>
+                <span class="n">last_msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">messages</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">messages</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">text</span>
+
+            <span class="c1"># to get last message&#39;s created time by comparing current day</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">messages</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">messages</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">):</span>
+
+                <span class="c1"># to get last message&#39;s created time by chat id</span>
+                <span class="n">date</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">messages</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">messages</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">date</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">messages</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">messages</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%H:%M&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+            <span class="s2">&quot;last_msg&quot;</span><span class="p">:</span> <span class="n">last_msg</span><span class="p">,</span>
+            <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span>
+            <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="n">num_not_seen</span><span class="p">,</span>
+            <span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="n">username</span><span class="p">,</span>
+            <span class="s2">&quot;img&quot;</span><span class="p">:</span> <span class="n">img</span>
+        <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="UsersChat.add">
+<a class="viewcode-back" href="../../../backend.models.html#backend.models.models.UsersChat.add">[docs]</a>
+    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        to add new item and commit it</span>
+<span class="sd">        :return: new item</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="UsersChat.commit">
+<a class="viewcode-back" href="../../../backend.models.html#backend.models.models.UsersChat.commit">[docs]</a>
+    <span class="k">def</span> <span class="nf">commit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        to update item</span>
+<span class="sd">        :return: updated item</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="UsersChat.delete">
+<a class="viewcode-back" href="../../../backend.models.html#backend.models.models.UsersChat.delete">[docs]</a>
+    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        to delete item</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="UsersMessages">
+<a class="viewcode-back" href="../../../backend.models.html#backend.models.models.UsersMessages">[docs]</a>
+<span class="k">class</span> <span class="nc">UsersMessages</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class to create message table</span>
+<span class="sd">    foreign keys:</span>
+<span class="sd">        chat_id: to get id column from chat model</span>
+<span class="sd">        user_id: to get id from user model</span>
+<span class="sd">    relationship:</span>
+<span class="sd">        messages_status: to get SeenMessages datas</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;users_messages&quot;</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">chat_id</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s1">&#39;users_chat.id&#39;</span><span class="p">))</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">String</span><span class="p">)</span>
+    <span class="n">date</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">DateTime</span><span class="p">)</span>
+    <span class="n">user_id</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s1">&#39;user.id&#39;</span><span class="p">))</span>
+    <span class="n">messages_status</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="s1">&#39;SeenMessages&#39;</span><span class="p">,</span> <span class="n">backref</span><span class="o">=</span><span class="s2">&quot;user_msg&quot;</span><span class="p">,</span> <span class="n">order_by</span><span class="o">=</span><span class="s2">&quot;SeenMessages.id&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="UsersMessages.add">
+<a class="viewcode-back" href="../../../backend.models.html#backend.models.models.UsersMessages.add">[docs]</a>
+    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        to add new item and commit it</span>
+<span class="sd">        :return: new item</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="UsersMessages.commit">
+<a class="viewcode-back" href="../../../backend.models.html#backend.models.models.UsersMessages.commit">[docs]</a>
+    <span class="k">def</span> <span class="nf">commit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        to update item</span>
+<span class="sd">        :return: updated item</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="UsersMessages.delete">
+<a class="viewcode-back" href="../../../backend.models.html#backend.models.models.UsersMessages.delete">[docs]</a>
+    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        to delete item</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="SeenMessages">
+<a class="viewcode-back" href="../../../backend.models.html#backend.models.models.SeenMessages">[docs]</a>
+<span class="k">class</span> <span class="nc">SeenMessages</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class to create seen_messages table</span>
+<span class="sd">    this model to separate messages by (received, not received)</span>
+<span class="sd">    foreign keys:</span>
+<span class="sd">        user_id: to get id colum from user model</span>
+<span class="sd">        msg_id: to get id colum from users_messages model</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;seen_messages&quot;</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">user_id</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s1">&#39;user.id&#39;</span><span class="p">))</span>
+    <span class="n">msg_id</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s1">&#39;users_messages.id&#39;</span><span class="p">))</span>
+
+<div class="viewcode-block" id="SeenMessages.add">
+<a class="viewcode-back" href="../../../backend.models.html#backend.models.models.SeenMessages.add">[docs]</a>
+    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        to add new item and commit it</span>
+<span class="sd">        :return: new item</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="SeenMessages.commit">
+<a class="viewcode-back" href="../../../backend.models.html#backend.models.models.SeenMessages.commit">[docs]</a>
+    <span class="k">def</span> <span class="nf">commit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        to update item</span>
+<span class="sd">        :return: updated item</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SeenMessages.delete">
+<a class="viewcode-back" href="../../../backend.models.html#backend.models.models.SeenMessages.delete">[docs]</a>
+    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        to delete item</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Begzod Jumaniyozov.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

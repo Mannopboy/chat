@@ -1,0 +1,727 @@
+@import "variables"
+@import "animations"
+@import "mixins"
+//@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap')
+*
+  margin: 0
+  padding: 0
+  box-sizing: border-box
+  font-family: 'Roboto Slab', serif
+
+body
+  background-color: $dark
+
+.active
+  display: flex !important
+
+input[type="search"]::-webkit-search-decoration:hover,
+input[type="search"]::-webkit-search-cancel-button:hover
+  cursor: pointer
+
+i
+  cursor: pointer
+  color: $main_color2
+
+  &:hover
+    color: $white
+
+.basic
+  display: flex
+  height: 100vh
+  position: relative
+
+  &_header
+    height: 60px
+    background-color: $main_color
+    display: flex
+    padding: 5px 10px
+    justify-content: space-between
+    border-bottom: 5px solid $main_color
+
+    &_block
+      display: flex
+      align-items: center
+      z-index: 5
+
+    &_search
+      display: flex
+      align-items: center
+      gap: 5px
+
+      background-color: $main_color2
+      color: $main_color
+      padding: 10px 15px
+      width: 270px
+      border-radius: 6px 6px 6px 6px
+      position: relative
+
+      i
+        color: $main_color
+
+
+      &:before
+        display: block
+        content: ''
+        width: 50px
+        height: 50px
+        background-color: $main_color
+        border-radius: 50%
+        position: absolute
+        left: -17%
+
+      //transform:
+      input
+        background-color: transparent
+        outline: none
+        border: none
+        width: 90%
+        color: $main_color
+
+        &::placeholder
+          color: $main_color
+
+    &_icon
+      display: flex
+      align-items: center
+      justify-content: center
+      width: 50px
+      height: 50px
+      border-radius: 50%
+      background-color: $main_color
+      border: 5px solid $main_color2
+      color: white
+      gap: 5px
+      cursor: pointer
+      font-size: 15px
+      position: relative
+      z-index: 6
+
+      &:active
+        transform: scale(0.9)
+
+      i
+        transform: rotate(0deg)
+        transition: .5s
+
+        &:hover
+          transform: rotate(360deg)
+
+  &_body
+    height: 90%
+    width: 30%
+    display: flex
+    flex-direction: column
+
+  &__menu
+    width: 100%
+    background-color: $main_color
+    min-height: 100%
+    display: flex
+    flex-direction: column
+    align-items: center
+    transition: .5s
+    overflow: auto
+    position: relative
+
+    &_btn
+      position: fixed
+      bottom: 5%
+      right: 5%
+      width: 50px
+      height: 50px
+      border-radius: 50%
+      border: none
+      outline: none
+      cursor: pointer
+      background-color: $main_color2
+      color: $dark
+      font-size: 20px
+      display: flex
+      align-items: center
+      justify-content: center
+
+    &_add
+      z-index: 5
+      position: relative
+      font-size: 30px
+      color: $main_color
+
+    &_animate
+      width: 100%
+      height: 100%
+      animation-name: btn_animate
+      animation-duration: 1s
+      animation-iteration-count: infinite
+      background-color: $main_color2
+      position: absolute
+      top: 0
+      left: 0
+      border-radius: 50%
+
+    &::-webkit-scrollbar-thumb
+      cursor: pointer
+      background-color: transparent
+      transition: .5s
+
+    &::-webkit-scrollbar
+      width: 5px
+      transition: .5s
+
+    &::-webkit-scrollbar-track
+      background-color: transparent
+      transition: .5s
+
+    &::-webkit-scrollbar-thumb
+      cursor: pointer
+      background-color: transparent
+      transition: .5s
+
+    &:hover::-webkit-scrollbar-track
+      background-color: #ffffff
+
+
+    &:hover::-webkit-scrollbar-thumb
+      cursor: pointer
+      background-color: $main_color2
+
+    a
+      text-decoration: none
+      margin-top: 5px
+      width: 100%
+
+    .user
+      width: 100%
+      height: 60px
+      background-color: $main_color2
+      display: flex
+      align-items: center
+      padding: 0 5px
+      justify-content: space-around
+      border-radius: 6px
+
+      &_active
+        background-color: $active_color
+
+        .user__info, .user__data_clock
+          color: $white
+
+      &:hover
+        //background-color: #bacfef
+        //background-color: #3d5a80
+        background-color: #0077b6
+      //background-color: #1e6091
+      &__img
+
+        width: 15%
+        height: 90%
+
+        img
+          width: 100%
+          height: 100%
+          border-radius: 50%
+
+      &__info
+        width: 50%
+        color: #1d3557
+
+
+      &__data
+        width: 25%
+        display: flex
+        flex-direction: column
+        align-items: center
+
+        &_count
+          background-color: $main_color
+          width: 25px
+          height: 25px
+          color: $white
+          border-radius: 50%
+          display: flex
+          align-items: center
+          justify-content: center
+
+        &_clock
+          color: $main_color
+
+  &__msg
+    position: relative
+    width: 70%
+    height: 100%
+    background-color: $dark
+
+    &_overlay
+      width: 200px
+      height: 100px
+      background-color: $active_color
+      border-radius: 5px
+      position: absolute
+      right: 0
+      top: 9%
+      display: none
+
+      ul
+        width: fit-content
+        height: 100%
+        display: flex
+        justify-content: space-around
+        flex-direction: column
+        align-items: flex-start
+        padding: 0 10px
+        list-style: none
+
+        li
+          display: flex
+          gap: 10px
+          cursor: pointer
+
+          &:hover
+            color: $main_color2
+
+    &_icon
+      cursor: pointer
+      width: 50px
+      display: flex
+      align-items: center
+      justify-content: center
+
+
+    &_header
+      width: 100%
+      height: 50px
+      background-color: $main_color
+      display: flex
+      justify-content: space-between
+      padding: 5px 10px
+      cursor: pointer
+      border-left: 1px solid $dark
+      border-right: 1px solid $dark
+
+    &_text
+      display: flex
+      flex-direction: column
+      padding: 5px 0
+      height: 85%
+
+      .texts
+        display: flex
+        flex-direction: column
+        gap: 15px
+        height: 100%
+        padding: 10px
+        overflow-y: auto
+
+        &::-webkit-scrollbar-thumb
+          cursor: pointer
+          background-color: transparent
+          transition: .5s
+
+        &::-webkit-scrollbar
+          width: 5px
+          transition: .5s
+
+        &::-webkit-scrollbar-track
+          background-color: transparent
+          transition: .5s
+
+        &::-webkit-scrollbar-thumb
+          cursor: pointer
+          background-color: transparent
+          transition: .5s
+
+        &:hover::-webkit-scrollbar-track
+          background-color: #ffffff
+
+
+        &:hover::-webkit-scrollbar-thumb
+          cursor: pointer
+          background-color: $main_color2
+
+    &_infos
+      width: fit-content
+      min-width: 30%
+      background-color: $main_color
+      display: flex
+      padding: 10px
+      color: $white
+      border-radius: 10px
+      justify-content: space-between
+
+      .text_data
+        align-self: flex-end
+        display: flex
+        gap: 5px
+        color: $main_color2
+
+    .user
+      align-self: flex-end
+      background-color: $main_color2
+      color: $main_color
+
+      .text_data
+        color: $main_color
+
+        i
+          color: #0ead69
+
+    &_data
+      align-self: center
+      padding: 5px
+      border-radius: 10px
+      background-color: $main_color
+      color: $white
+
+
+    &_info
+      color: $white
+      width: 75%
+
+    &_icons
+      display: flex
+      width: 25%
+      justify-content: space-around
+      align-items: center
+
+    &_block
+      width: 100%
+      height: 50px
+      background-color: $main_color
+      position: absolute
+      bottom: 0
+      left: 0
+      display: flex
+      justify-content: space-around
+      align-items: center
+      border-left: 1px solid $dark
+      border-right: 1px solid $dark
+      padding: 5px
+
+      textarea
+        background-color: transparent
+        width: 85%
+        border: none
+        outline: none
+        //height: 100%
+        resize: none
+        overflow: auto
+        color: $white
+
+        &::-webkit-scrollbar-thumb
+          cursor: pointer
+          background-color: transparent
+          transition: .5s
+
+        &::-webkit-scrollbar
+          width: 5px
+          transition: .5s
+
+        &::-webkit-scrollbar-track
+          background-color: transparent
+          transition: .5s
+
+        &::-webkit-scrollbar-thumb
+          cursor: pointer
+          background-color: transparent
+          transition: .5s
+
+        &::placeholder
+          color: $white
+
+  &__sender
+    width: 25%
+    height: 100%
+    background-color: $main_color
+    display: none
+
+    &_header
+      display: flex
+      justify-content: space-between
+      padding: 5px 15px
+      height: 50px
+      align-items: center
+      color: $white
+
+    &_block
+      display: flex
+      //justify-content: space-between
+      padding: 5px 15px
+      align-items: center
+      gap: 30px
+      color: $white
+      border-bottom: 10px solid $main_color2
+
+      .block
+        display: flex
+        flex-direction: column
+
+    &_img
+      width: 70px
+      height: 70px
+
+      img
+        width: 100%
+        height: 100%
+        border-radius: 50%
+
+.menu
+  @include overlay
+  left: -100%
+  z-index: 7
+
+  &_active
+    left: 0
+
+  &__block
+    display: flex
+    flex-direction: column
+    align-items: center
+    justify-content: space-around
+    width: 300px
+    height: 100%
+    background-color: $dark
+    color: $white
+
+    ul
+      list-style: none
+      display: flex
+      flex-direction: column
+      gap: 10px
+
+      li
+        border-bottom: 1px solid $main_color2
+        cursor: pointer
+
+        a
+          text-decoration: none
+          color: $white
+
+    &_user
+      display: flex
+      flex-direction: column
+      gap: 10px
+
+      img
+        width: 70px
+        height: 70px
+        border-radius: 50%
+
+.overlay
+  @include overlay
+  left: 0
+  z-index: 20
+  display: none
+  align-items: center
+  justify-content: center
+
+  &_user
+    display: flex
+    gap: 20px
+    font-size: 20px
+
+  &__form
+    width: 300px
+    height: 200px
+    background-color: $main_color2
+    border-radius: 10px
+    display: flex
+    justify-content: space-around
+    flex-direction: column
+    align-items: center
+
+    i
+      color: $main_color
+
+    input
+      @include inputs
+
+    button
+      @include btn
+
+.contacts
+  @include overlay
+  display: none
+  justify-content: center
+  align-items: center
+  z-index: 10
+
+  &__block
+    width: 400px
+    height: 90%
+    background-color: $main_color
+    border-radius: 10px
+    display: flex
+    flex-direction: column
+    position: relative
+
+    &_btn
+      width: 150px
+      height: 30px
+      background-color: $main_color2
+      position: absolute
+      bottom: 5%
+      outline: none
+      cursor: pointer
+      border: none
+      left: 5%
+      border-radius: 5px
+      color: $main_color
+
+      &:active
+        transform: scale(0.8)
+
+    &_search
+
+      width: 90%
+      display: flex
+      align-items: center
+      height: 40px
+      gap: 10px
+      justify-content: center
+
+      input
+        background-color: transparent
+        border: none
+        outline: none
+        width: 80%
+        color: $white
+        height: 100%
+
+        &::placeholder
+          color: $white
+
+    &_list
+      display: flex
+      flex-direction: column
+      align-items: center
+      gap: 10px
+      height: 80%
+      overflow-y: auto
+
+      &::-webkit-scrollbar-thumb
+        cursor: pointer
+        background-color: transparent
+        transition: .5s
+
+      &::-webkit-scrollbar
+        width: 5px
+        transition: .5s
+
+      &::-webkit-scrollbar-track
+        background-color: transparent
+        transition: .5s
+
+      &::-webkit-scrollbar-thumb
+        cursor: pointer
+        background-color: transparent
+        transition: .5s
+
+      &:hover::-webkit-scrollbar-track
+        background-color: #ffffff
+
+
+      &:hover::-webkit-scrollbar-thumb
+        cursor: pointer
+        background-color: $main_color2
+
+
+    &_item
+      width: 90%
+      height: 60px
+      background-color: $main_color2
+      display: flex
+      align-items: center
+      gap: 20px
+      color: $main_color
+      padding: 0 10px
+      border-radius: 10px
+      cursor: pointer
+
+      img
+        width: 50px
+        height: 50px
+        border-radius: 50%
+
+.contact
+  @include overlay
+  z-index: 7
+  display: none
+  justify-content: center
+  align-items: center
+
+  &__block
+    width: 300px
+    height: 400px
+    background-color: $main_color2
+    border-radius: 10px
+    display: flex
+    flex-direction: column
+    align-items: center
+    justify-content: space-around
+
+    input
+      @include inputs
+
+    button
+      @include btn
+
+    &_camera
+      width: 100px
+      height: 30px
+      background-color: rgba(20, 33, 61, 0.66)
+      display: flex
+      align-items: center
+      justify-content: center
+      position: absolute
+      bottom: -100%
+      transition: .5s
+      cursor: pointer
+
+    &_img
+      width: 100px
+      height: 100px
+      border-radius: 50%
+      position: relative
+      overflow: hidden
+
+      &:hover .contact__block_camera
+        bottom: 0
+
+      img
+        width: 100%
+        height: 100%
+        border-radius: 50%
+
+.confirmation
+  @include overlay
+  z-index: 7
+  display: none
+  align-items: center
+  justify-content: center
+  &__block
+    width: 250px
+    height: 75px
+    display: flex
+    flex-direction: column
+    align-items: center
+    justify-content: space-around
+    background-color: $main_color2
+    border-radius: 5px
+    &_second
+      display: flex
+      gap: 10px
+      align-items: center
+      input
+        width: 20px
+        height: 20px
+    &_btn
+      display: flex
+      justify-content: space-around
+      width: 100%
+      button
+        @include btn
+        width: 40%
+        height: 30px
+      .no
+        background-color: $flash_color
+      .yes
+        background-color: $success

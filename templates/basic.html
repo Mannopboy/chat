@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat App</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"
+            integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA=="
+            crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+          integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='sass/basic.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='sass/flash.min.css') }}">
+</head>
+<body>
+
+<section class="basic">
+    {% include 'flash.html' %}
+    <div class="basic_body">
+        <header class="basic_header">
+            <div class="basic_header_block">
+                <div class="basic_header_icon">
+                    <i class="fa-regular fa-paper-plane"></i>
+                </div>
+                <div class="basic_header_search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="search" placeholder="Search...">
+                </div>
+            </div>
+        </header>
+
+        <div class="basic__menu">
+            {% for chat in user_chats %}
+                <a href="{{ url_for('chat',chat_id=chat.id) }}">
+                    <div class="user user_active">
+                        <div class="user__img">
+                            {% if chat.img %}
+                                <img src="{{ chat.img }}" alt="">
+                            {% else %}
+                                <img src="/static/img/basic/messi.jpg" alt="">
+                            {% endif %}
+                        </div>
+                        <div class="user__info">
+                            <p class="user__info_name">
+                                {{ chat.username }}</p>
+                            <p class="user__info_msg">{{ chat.last_msg }}</p>
+                        </div>
+                        <div class="user__data">
+                            <p class="user__data_clock">
+                                {{ chat.date }}</p>
+                            {% if chat.count %}
+                                <p class="user__data_count">{{ chat.count }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+
+    </div>
+    <div class="basic__msg">
+        <div class="basic__msg_overlay">
+            <ul>
+                <li><i class="fa-solid fa-paintbrush"></i> Set wallpaper</li>
+                <li class="clear_history"><i class="fa-solid fa-broom"></i> Clear History</li>
+                <li class="delete_chat"><i class="fa-solid fa-trash"></i> Delete Chat</li>
+            </ul>
+        </div>
+        <div class="basic__msg_header">
+            <div class="basic__msg_info">
+                <p class="chat_user">{{ username }}</p>
+                <p class="chat_time"> {{ user_status }}</p>
+            </div>
+            <div class="basic__msg_icons">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <i class="fa-regular fa-address-book right_modal"></i>
+                <i class="fa-solid fa-ellipsis-vertical info_chat"></i>
+            </div>
+        </div>
+        <div class="basic__msg_text">
+            <div class="texts" data-user="{{ user.username }}">
+                {% for message in user_messages %}
+                    <div class="basic__msg_data">{{ message.day }}</div>
+                    {% for msg in message['messages'] %}
+                        <div data-msg="{{ msg.id }}" data-status="{{ msg.status }}"
+                             class="basic__msg_infos {% if not msg.status and user.id != msg['user']['id'] %} not_seen {% endif %} {% if user.id == msg['user']['id'] %} user {% else %} infos {% endif %}">
+                            <p class="text">{{ msg.text }}</p>
+                            <div class="text_data">
+                                <p class="text_clock">{{ msg.time }}</p>
+                                {% if user.id == msg['user']['id'] %}
+                                    <i class="fa-solid fa-check"></i>
+                                    {% if msg.status %}
+                                        <i class="fa-solid fa-check"></i>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        </div>
+        <form class="basic__msg_block">
+            <div class="basic__msg_icon">
+                <i class="fa-solid fa-paperclip"></i>
+            </div>
+            <textarea class="text_msg" data-chat="{{ chat_id }}" rows="1" placeholder="Write a message..."></textarea>
+            <div class="basic__msg_icon">
+                <i class="fa-solid fa-face-smile"></i>
+            </div>
+            <div class="basic__msg_icon">
+                <i class="fa-solid fa-microphone microphone plane"></i>
+            </div>
+        </form>
+    </div>
+    <div class="basic__sender">
+        <div class="basic__sender_header">
+            <p>User Info</p>
+            <i class="fa-solid fa-xmark right_close"></i>
+        </div>
+        <div class="basic__sender_block">
+            <div class="basic__sender_img">
+                <img src="/static/img/basic/messi.jpg" alt="">
+            </div>
+            <div class="block">
+                <div class="basic__sender_info">
+                    {{ username }}
+                </div>
+                <div class="basic__sender_info">
+                    {{ user_status }}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="menu">
+    <div class="menu__block">
+        <div class="menu__block_user">
+            {% if not user.img %}
+                <img src="/static/img/basic/messi.jpg" alt="">
+            {% else %}
+                <img src="{{ user.img }}" alt="">
+            {% endif %}
+            <div>{{ user.username }}</div>
+        </div>
+        <div class="menu__block_">
+            <ul>
+                <li id="contact">Contacts</li>
+                <li id="settings">Settings</li>
+                <li><a href="{{ url_for('sign') }}">Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</section>
+<section class="overlay">
+    <form action="{{ url_for('add_contact') }}" class="overlay__form" method="post">
+        <div class="overlay_user">
+            Add Contact
+        </div>
+        <input type="text" placeholder="username" name="username">
+        <input type="text" placeholder="contact name" name="name">
+        <button>Save</button>
+    </form>
+</section>
+<section class="contacts" id="contact_overlay">
+    <div class="contacts__block">
+        <div class="contacts__block_search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="search" placeholder="Search...">
+        </div>
+        <div class="contacts__block_list">
+            {% for contact in user_contacts %}
+                <div class="contacts__block_item">
+                    <img src="/static/img/basic/messi.jpg" alt="">
+                    <div class="contacts__block_info">
+                        <div class="contacts__block_name">{{ contact.second.username }}</div>
+                        <div class="contacts__block_clock">{{ user_status }}</div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <button class="contacts__block_btn">Add</button>
+    </div>
+</section>
+<section class="contact">
+    <form class="contact__block" enctype="multipart/form-data" method="post" action="{{ url_for('change_info') }}">
+        <div class="contact__block_img">
+            {% if user.img %}
+                <img src="{{ user.img }}" alt="">
+            {% else %}
+                <img src="/static/img/basic/messi.jpg" class="contact_img" alt="">
+            {% endif %}
+            <div class="contact__block_camera" id="camera">
+                <i class="fa-solid fa-camera"></i>
+            </div>
+        </div>
+        <input type="text" placeholder="username" value="{{ user.username }}" name="username" required>
+        <input type="text" placeholder="name" name="name" value="{{ user.name }}" required>
+        <input type="file" name="img" hidden id="file_img">
+        <input type="text" name="chat_id" value="{{ chat_id }}" hidden>
+        <button>Save</button>
+    </form>
+</section>
+<section class="confirmation">
+    <div class="confirmation__block">
+        <div class="confirmation__block_second">
+            <input type="checkbox">
+            Also Delete for {{ username }} ?
+        </div>
+        <div class="confirmation__block_btn">
+            <button class="yes">Yes</button>
+            <button class="no">No</button>
+        </div>
+    </div>
+</section>
+<script src="{{ url_for('static', filename='js/basic/script.js') }}"></script>
+<script src="{{ url_for('static', filename='js/flash/js.js') }}"></script>
+</body>
+</html>
+
